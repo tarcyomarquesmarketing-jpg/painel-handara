@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Handara · Revendedoras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#1a1016; --surface:#241820; --surface-2:#2e2029;
+  --wine:#7a2846; --rose:#c9556f; --rose-soft:#e79aa8;
+  --gold:#d9a441; --cream:#f4e9df;
+  --ink:#f4e9df; --muted:#b498a4; --line:#3d2c37;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 64px}
+#gate{position:fixed;inset:0;z-index:50;background:radial-gradient(120% 80% at 50% -10%, #3a1626 0%, var(--bg) 60%);display:flex;align-items:center;justify-content:center;padding:24px}
+.gate-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:38px 32px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.brand{font-family:'Fraunces',serif;font-weight:900;font-size:30px;letter-spacing:-.5px;color:var(--cream)}
+.brand span{color:var(--rose)}
+.gate-card p{color:var(--muted);font-size:14px;margin:8px 0 26px}
+.gate-card label{display:block;font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:500}
+.gate-card input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--ink);padding:13px 15px;border-radius:12px;font-size:15px;font-family:inherit}
+.gate-card input:focus{outline:2px solid var(--rose);border-color:transparent}
+.gate-card button{width:100%;margin-top:16px;background:var(--rose);color:#2a0f18;border:none;padding:13px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.gate-card button:hover{background:var(--rose-soft)}
+.gate-card button:disabled{opacity:.6;cursor:wait}
+.err{color:#e98a8a;font-size:13px;margin-top:12px;min-height:18px}
+.top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:34px}
+.top h1{font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:var(--cream);letter-spacing:-.3px}
+.top .sub{color:var(--muted);font-size:13px;margin-top:2px}
+.dl{background:var(--gold);color:#2a1c06;border:none;padding:12px 20px;border-radius:12px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;display:inline-flex;gap:9px;align-items:center;transition:transform .12s, background .15s}
+.dl:hover{background:#e8b955;transform:translateY(-1px)}
+.dl:disabled{opacity:.5;cursor:wait}
+.hero{background:linear-gradient(135deg, var(--wine) 0%, #4a1a2c 100%);border-radius:22px;padding:34px 32px;margin-bottom:20px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:radial-gradient(circle, rgba(217,164,65,.25), transparent 70%);border-radius:50%}
+.hero .big{font-family:'Fraunces',serif;font-weight:900;font-size:72px;line-height:1;color:var(--cream);letter-spacing:-2px}
+.hero .lbl{color:var(--rose-soft);font-size:15px;margin-top:6px;font-weight:500}
+.hero .row{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}
+.hero .row .n{font-size:24px;font-weight:600;color:var(--cream);font-family:'Fraunces',serif;display:block}
+.hero .row .t{font-size:12px;color:var(--rose-soft);margin-top:2px;display:block}
+.grid{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px}
+.card h2{font-family:'Fraunces',serif;font-weight:600;font-size:16px;color:var(--cream);margin-bottom:18px}
+.chart-box{height:230px;position:relative}
+.cities{list-style:none;display:flex;flex-direction:column;gap:13px}
+.cities li{display:flex;align-items:center;gap:12px;font-size:14px}
+.cities .name{flex:1;color:var(--ink)}
+.cities .bar{height:7px;background:var(--surface-2);border-radius:4px;flex:2;overflow:hidden}
+.cities .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:4px}
+.cities .q{color:var(--muted);font-size:13px;min-width:26px;text-align:right}
+.state{color:var(--muted);font-size:14px;padding:40px 0;text-align:center}
+.foot{color:var(--muted);font-size:12px;text-align:center;margin-top:40px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="gate-card">
+    <div class="brand">Han<span>dara</span></div>
+    <p>Painel de revendedoras. Informe a senha de acesso.</p>
+    <label for="pw">Senha</label>
+    <input id="pw" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password">
+    <button id="enter">Acessar painel</button>
+    <div class="err" id="err"></div>
+  </div>
+</div>
+<div class="wrap hide" id="app">
+  <div class="top">
+    <div>
+      <h1>Revendedoras Handara</h1>
+      <div class="sub" id="updated">Carregando dados&hellip;</div>
+    </div>
+    <button class="dl" id="download" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Baixar planilha
+    </button>
+  </div>
+  <div id="content" class="hide">
+    <div class="hero">
+      <div class="big" id="h-total">&mdash;</div>
+      <div class="lbl">revendedoras cadastradas</div>
+      <div class="row">
+        <div><span class="n" id="h-7d">&mdash;</span><span class="t">últimos 7 dias</span></div>
+        <div><span class="n" id="h-30d">&mdash;</span><span class="t">últimos 30 dias</span></div>
+        <div><span class="n" id="h-sessoes">&mdash;</span><span class="t">conversas no WhatsApp</span></div>
+        <div><span class="n" id="h-msgs">&mdash;</span><span class="t">mensagens trocadas</span></div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h2>Cadastros por dia · 30 dias</h2>
+        <div class="chart-box"><canvas id="trend"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Principais cidades</h2>
+        <ul class="cities" id="cities"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="state hide" id="loadstate">Carregando métricas&hellip;</div>
+  <div class="state hide" id="errstate"></div>
+  <div class="foot">Dados em tempo real · Handara</div>
+</div>
+<script>
+const FN_URL = "https://oebwqhimbixboyjjrsiv.supabase.co/functions/v1/painel-handara";
+const gate = document.getElementById('gate');
+const app = document.getElementById('app');
+const pw = document.getElementById('pw');
+const err = document.getElementById('err');
+const enterBtn = document.getElementById('enter');
+let CADASTROS = [];
+
+async function tryLogin(){
+  const senha = pw.value;
+  if(!senha){ err.textContent = "Digite a senha."; return; }
+  err.textContent = ""; enterBtn.disabled = true; enterBtn.textContent = "Verificando…";
+  try{
+    const dados = await buscar(senha);
+    try{ sessionStorage.setItem('h_pw', senha); }catch(e){}
+    gate.classList.add('hide'); app.classList.remove('hide');
+    mostrar(dados);
+  }catch(e){
+    if(e.message === 'senha_invalida'){ err.textContent = "Senha incorreta. Tente novamente."; }
+    else{ err.textContent = "Erro ao acessar: " + e.message; }
+    pw.value = ""; pw.focus();
+  }finally{
+    enterBtn.disabled = false; enterBtn.textContent = "Acessar painel";
+  }
+}
+enterBtn.addEventListener('click', tryLogin);
+pw.addEventListener('keydown', e => { if(e.key === 'Enter') tryLogin(); });
+
+try{
+  const saved = sessionStorage.getItem('h_pw');
+  if(saved){
+    buscar(saved).then(d=>{ gate.classList.add('hide'); app.classList.remove('hide'); mostrar(d); })
+                 .catch(()=>{ try{sessionStorage.removeItem('h_pw');}catch(e){} });
+  }
+}catch(e){}
+
+async function buscar(senha){
+  const r = await fetch(FN_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ senha })
+  });
+  if(r.status === 401){ throw new Error('senha_invalida'); }
+  if(!r.ok){ throw new Error('falha (' + r.status + ')'); }
+  return r.json();
+}
+
+function mostrar(dados){
+  const content = document.getElementById('content');
+  const loadstate = document.getElementById('loadstate');
+  CADASTROS = dados.cadastros || [];
+  loadstate.classList.add('hide');
+  content.classList.remove('hide');
+  document.getElementById('download').disabled = CADASTROS.length === 0;
+  render(CADASTROS, dados.conversas || {});
+}
+
+function render(rows, conv){
+  const now = new Date();
+  const days = n => new Date(now.getTime() - n*864e5);
+  const d7 = days(7), d30 = days(30);
+  const n7 = rows.filter(r => new Date(r.criado_em) >= d7).length;
+  const n30 = rows.filter(r => new Date(r.criado_em) >= d30).length;
+  document.getElementById('h-total').textContent = rows.length;
+  document.getElementById('h-7d').textContent = n7;
+  document.getElementById('h-30d').textContent = n30;
+  document.getElementById('h-sessoes').textContent = conv.sessoes ?? '—';
+  document.getElementById('h-msgs').textContent = (conv.mensagens ?? 0).toLocaleString('pt-BR');
+  document.getElementById('updated').textContent =
+    "Atualizado em " + now.toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  drawTrend(rows, now);
+  drawCities(rows);
+}
+
+function drawTrend(rows, now){
+  const labels = [], counts = [], map = {};
+  rows.forEach(r=>{ const k=(r.criado_em||'').slice(0,10); if(k) map[k]=(map[k]||0)+1; });
+  for(let i=29;i>=0;i--){
+    const d = new Date(now.getTime()-i*864e5);
+    const k = d.toISOString().slice(0,10);
+    labels.push(d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
+    counts.push(map[k]||0);
+  }
+  const ctx = document.getElementById('trend');
+  const g = ctx.getContext('2d').createLinearGradient(0,0,0,230);
+  g.addColorStop(0,'rgba(201,85,111,.55)'); g.addColorStop(1,'rgba(201,85,111,0)');
+  new Chart(ctx,{type:'line',
+    data:{labels,datasets:[{data:counts,borderColor:'#e79aa8',backgroundColor:g,fill:true,tension:.35,borderWidth:2,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:'#d9a441'}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#2e2029',titleColor:'#f4e9df',bodyColor:'#e79aa8',padding:10,displayColors:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#b498a4',maxTicksLimit:8,font:{size:11}}},
+              y:{grid:{color:'#3d2c37'},ticks:{color:'#b498a4',precision:0,font:{size:11}},beginAtZero:true}}}
+  });
+}
+
+function drawCities(rows){
+  const map = {};
+  rows.forEach(r=>{ const c=(r.cidade_uf||'').trim()||'(não informado)'; map[c]=(map[c]||0)+1; });
+  const top = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const max = top.length?top[0][1]:1;
+  const ul = document.getElementById('cities'); ul.innerHTML='';
+  top.forEach(([name,q])=>{
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="name">'+esc(name)+'</span><span class="bar"><i style="width:'+Math.round(q/max*100)+'%"></i></span><span class="q">'+q+'</span>';
+    ul.appendChild(li);
+  });
+}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+document.getElementById('download').addEventListener('click', ()=>{
+  if(!CADASTROS.length) return;
+  const data = CADASTROS.map(r=>({
+    Nome:r.nome||'', WhatsApp:r.whatsapp||'', 'Cidade/UF':r.cidade_uf||'',
+    Bairro:r.bairro||'', 'Motivação':r.motivacao||'', Status:r.status||'', Origem:r.origem||'',
+    'Cadastrado em': r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : ''
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  ws['!cols'] = [{wch:26},{wch:16},{wch:22},{wch:16},{wch:34},{wch:16},{wch:14},{wch:20}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Revendedoras");
+  XLSX.writeFile(wb, 'revendedoras-handara-'+new Date().toISOString().slice(0,10)+'.xlsx');
+});
+</script>
+</body>
+</html>
