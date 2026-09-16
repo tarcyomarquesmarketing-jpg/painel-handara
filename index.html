@@ -206,7 +206,7 @@ function drawTrend(rows, now){
 
 function drawCities(rows){
   const map = {};
-  rows.forEach(r=>{ const c=(r.cidade_uf||'').trim()||'(não informado)'; map[c]=(map[c]||0)+1; });
+  rows.forEach(r=>{ const c=(r.cidade_norm||r.cidade_uf||'').trim()||'(não informado)'; map[c]=(map[c]||0)+1; });
   const top = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,7);
   const max = top.length?top[0][1]:1;
   const ul = document.getElementById('cities'); ul.innerHTML='';
@@ -222,11 +222,12 @@ document.getElementById('download').addEventListener('click', ()=>{
   if(!CADASTROS.length) return;
   const data = CADASTROS.map(r=>({
     Nome:r.nome||'', WhatsApp:r.whatsapp||'', 'Cidade/UF':r.cidade_uf||'',
+    'Cidade (padronizada)':r.cidade_norm||'',
     Bairro:r.bairro||'', 'Motivação':r.motivacao||'', Status:r.status||'', Origem:r.origem||'',
     'Cadastrado em': r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : ''
   }));
   const ws = XLSX.utils.json_to_sheet(data);
-  ws['!cols'] = [{wch:26},{wch:16},{wch:22},{wch:16},{wch:34},{wch:16},{wch:14},{wch:20}];
+  ws['!cols'] = [{wch:26},{wch:16},{wch:22},{wch:22},{wch:16},{wch:34},{wch:16},{wch:14},{wch:20}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Revendedoras");
   XLSX.writeFile(wb, 'revendedoras-handara-'+new Date().toISOString().slice(0,10)+'.xlsx');
