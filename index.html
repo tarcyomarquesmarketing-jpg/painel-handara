@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Handara ·  Pernambuco</title>
+<title>Painel Handara · Revendedoras</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -44,6 +44,16 @@ img.logo{display:block;height:auto}
 .dl:hover{background:var(--brand-deep);transform:translateY(-1px)}
 .dl:disabled{opacity:.5;cursor:wait;box-shadow:none}
 
+/* RESUMO temporal */
+.resumo{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
+@media(max-width:680px){.resumo{grid-template-columns:repeat(2,1fr)}}
+.rcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 2px 10px rgba(58,36,24,.03)}
+.rcard.total{background:linear-gradient(135deg,var(--brand) 0%,#F0662E 100%);border:none;box-shadow:0 10px 26px rgba(233,78,26,.20)}
+.rcard .rk{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.rcard.total .rk{color:rgba(255,255,255,.85)}
+.rcard .rv{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:38px;line-height:1;color:var(--ink);margin-top:6px}
+.rcard.total .rv{color:#fff}
+
 /* FUNIL */
 .funnel{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
 @media(max-width:680px){.funnel{grid-template-columns:1fr}}
@@ -72,17 +82,26 @@ img.logo{display:block;height:auto}
 .temp .tt{font-size:11px;opacity:.9;line-height:1.35}
 .temp.hot{background:linear-gradient(135deg,#E94E1A,#C63C0E)}
 .temp.warm{background:linear-gradient(135deg,#F0842E,#E06818)}
-.temp.mild{background:linear-gradient(135deg,#E8B34A,#D69A2A)}
-.temp.cold{background:linear-gradient(135deg,#B9A896,#9C8577)}
+.temp.mild{background:linear-gradient(135deg,#C68611,#9E6804)}
+.temp.cold{background:linear-gradient(135deg,#8A7867,#6E5C4C)}
 .reco{margin-top:16px;font-size:13px;color:var(--ink-soft);background:var(--brand-tint);border-radius:12px;padding:13px 16px;border-left:3px solid var(--brand)}
 .reco b{color:var(--brand-deep)}
 
 /* INSIGHT engajamento */
-.insight{display:flex;gap:22px;align-items:center;flex-wrap:wrap;background:var(--surface-2);border-radius:16px;padding:18px 22px;margin-top:16px}
-.insight .pair{display:flex;gap:22px;flex-wrap:wrap}
-.insight .stat .sv{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:30px;color:var(--brand-deep);line-height:1}
-.insight .stat .sl{font-size:12px;color:var(--ink-soft);margin-top:2px}
-.insight .txt{flex:1;min-width:200px;font-size:13px;color:var(--ink-soft)}
+.insight{background:var(--surface-2);border-radius:16px;padding:22px 24px;margin-top:16px}
+.insight .ih{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.insight .isub{font-size:12px;color:var(--muted);margin-bottom:18px}
+.insight .comp{display:flex;flex-direction:column;gap:14px;margin-bottom:14px}
+.insight .crow{display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:14px}
+@media(max-width:560px){.insight .crow{grid-template-columns:110px 1fr auto;gap:10px}}
+.insight .clabel{font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:7px}
+.insight .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.insight .track{height:14px;background:#EDE3D9;border-radius:7px;overflow:hidden}
+.insight .track i{display:block;height:100%;border-radius:7px}
+.insight .cval{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:22px;line-height:1;white-space:nowrap;min-width:78px;text-align:right}
+.insight .cval small{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--muted);display:block;margin-top:1px}
+.insight .read{font-size:13px;color:var(--ink-soft);line-height:1.5;border-top:1px solid var(--line);padding-top:14px}
+.insight .read b{color:var(--brand-deep)}
 
 .grid{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
 @media(max-width:760px){.grid{grid-template-columns:1fr}}
@@ -130,6 +149,15 @@ img.logo{display:block;height:auto}
   </div>
   <div id="content" class="hide">
 
+    <div class="sec-title">Pré-cadastros por período</div>
+    <div class="resumo">
+      <div class="rcard"><div class="rk">Último dia</div><div class="rv" id="r-1d">&mdash;</div></div>
+      <div class="rcard"><div class="rk">7 dias</div><div class="rv" id="r-7d">&mdash;</div></div>
+      <div class="rcard"><div class="rk">15 dias</div><div class="rv" id="r-15d">&mdash;</div></div>
+      <div class="rcard"><div class="rk">30 dias</div><div class="rv" id="r-30d">&mdash;</div></div>
+      <div class="rcard total"><div class="rk">Total até agora</div><div class="rv" id="r-total">&mdash;</div></div>
+    </div>
+
     <div class="sec-title">Funil de conversão</div>
     <div class="funnel">
       <div class="fstep">
@@ -139,13 +167,13 @@ img.logo{display:block;height:auto}
         <div class="arrow">&rarr;</div>
       </div>
       <div class="fstep hl">
-        <div class="k">Cadastraram</div>
+        <div class="k">Pré-cadastraram</div>
         <div class="v" id="f-cad">&mdash;</div>
         <div class="d" id="f-taxa">&mdash; de conversão</div>
         <div class="arrow">&rarr;</div>
       </div>
       <div class="fstep">
-        <div class="k">Não cadastraram</div>
+        <div class="k">Não pré-cadastraram</div>
         <div class="v" id="f-nao">&mdash;</div>
         <div class="d">oportunidades ainda em aberto</div>
       </div>
@@ -156,7 +184,7 @@ img.logo{display:block;height:auto}
         <h2>Oportunidades a recuperar</h2>
         <div class="big-opp" id="o-quentes">&mdash;</div>
       </div>
-      <div class="sub" id="o-sub">Pessoas que conversaram mas não finalizaram o cadastro, separadas pelo nível de interesse demonstrado na conversa.</div>
+      <div class="sub" id="o-sub">Pessoas que conversaram mas não finalizaram o pré-cadastro, separadas pelo nível de interesse demonstrado na conversa.</div>
       <div class="temps">
         <div class="temp hot"><div class="tn">🔥 Muito quentes</div><div class="tv" id="t-hot">&mdash;</div><div class="tt">16+ mensagens · alto interesse</div></div>
         <div class="temp warm"><div class="tn">🟠 Quentes</div><div class="tv" id="t-warm">&mdash;</div><div class="tt">8 a 15 mensagens</div></div>
@@ -166,18 +194,28 @@ img.logo{display:block;height:auto}
       <div class="reco" id="reco">&mdash;</div>
 
       <div class="insight">
-        <div class="pair">
-          <div class="stat"><div class="sv" id="i-cad">&mdash;</div><div class="sl">msgs · quem cadastrou</div></div>
-          <div class="stat"><div class="sv" id="i-nao">&mdash;</div><div class="sl">msgs · quem não cadastrou</div></div>
+        <div class="ih">Nível de conversa antes de decidir</div>
+        <div class="isub">Média de mensagens trocadas com o agente, comparando os dois grupos</div>
+        <div class="comp">
+          <div class="crow">
+            <div class="clabel"><span class="dot" style="background:var(--brand)"></span>Quem se pré-cadastrou</div>
+            <div class="track"><i id="bar-cad" style="width:0;background:linear-gradient(90deg,var(--brand-soft),var(--brand))"></i></div>
+            <div class="cval" style="color:var(--brand-deep)"><span id="i-cad">&mdash;</span><small>mensagens</small></div>
+          </div>
+          <div class="crow">
+            <div class="clabel"><span class="dot" style="background:var(--cold)"></span>Quem não se pré-cadastrou</div>
+            <div class="track"><i id="bar-nao" style="width:0;background:var(--cold)"></i></div>
+            <div class="cval" style="color:var(--ink-soft)"><span id="i-nao">&mdash;</span><small>mensagens</small></div>
+          </div>
         </div>
-        <div class="txt">Quem se cadastra conversa muito mais com o agente. O engajamento na conversa é o principal sinal de intenção leads com muitas mensagens e sem cadastro são os mais fáceis de recuperar.</div>
+        <div class="read" id="i-read">&mdash;</div>
       </div>
     </div>
 
-    <div class="sec-title">Cadastros efetivados</div>
+    <div class="sec-title">Pré-cadastros efetivados</div>
     <div class="grid">
       <div class="card">
-        <h2>Cadastros por dia · 30 dias</h2>
+        <h2>Pré-cadastros por dia · 30 dias</h2>
         <div class="chart-box"><canvas id="trend"></canvas></div>
       </div>
       <div class="card">
@@ -248,6 +286,15 @@ function mostrar(dados){
 
 function render(rows, m){
   const now = new Date();
+  // resumo temporal (pré-cadastros por período, baseado na data de cada registro)
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const since = d => new Date(startOfToday.getTime() - d*864e5);
+  const cnt = fromDate => rows.filter(r => r.criado_em && new Date(r.criado_em) >= fromDate).length;
+  document.getElementById('r-1d').textContent = cnt(startOfToday);
+  document.getElementById('r-7d').textContent = cnt(since(7));
+  document.getElementById('r-15d').textContent = cnt(since(15));
+  document.getElementById('r-30d').textContent = cnt(since(30));
+  document.getElementById('r-total').textContent = rows.length;
   const conv = m.conversaram || 0, cad = m.cadastraram || 0, nao = m.nao_converteram || 0;
   const taxa = conv ? Math.round(cad/conv*100) : 0;
 
@@ -268,8 +315,16 @@ function render(rows, m){
     'demonstraram interesse real e representam a recuperação mais provável. Os '+mild+' mornos entram numa segunda onda; '+
     'os '+cold+' frios podem receber uma mensagem de reativação de baixo custo.';
 
+  const mc = Number(m.media_msgs_cadastrou)||0, mn = Number(m.media_msgs_nao)||0;
   document.getElementById('i-cad').textContent = (m.media_msgs_cadastrou ?? '—');
   document.getElementById('i-nao').textContent = (m.media_msgs_nao ?? '—');
+  const maxm = Math.max(mc, mn, 1);
+  document.getElementById('bar-cad').style.width = Math.round(mc/maxm*100)+'%';
+  document.getElementById('bar-nao').style.width = Math.round(mn/maxm*100)+'%';
+  const mult = mn ? (mc/mn) : 0;
+  document.getElementById('i-read').innerHTML =
+    'Quem se pré-cadastrou trocou cerca de <b>'+(mult?mult.toFixed(1):'—')+'x mais mensagens</b> com o agente antes de decidir. '+
+    'Ou seja: quanto mais a pessoa conversa, maior a chance de completar o pré-cadastro — por isso os leads que já conversaram bastante e não fecharam são os mais promissores para o follow-up.';
 
   document.getElementById('updated').textContent =
     "Atualizado em " + now.toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -319,7 +374,7 @@ document.getElementById('download').addEventListener('click', ()=>{
     Nome:r.nome||'', WhatsApp:r.whatsapp||'', 'Cidade/UF':r.cidade_uf||'',
     'Cidade (padronizada)':r.cidade_norm||'',
     Bairro:r.bairro||'', 'Motivação':r.motivacao||'', Status:r.status||'', Origem:r.origem||'',
-    'Cadastrado em': r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : ''
+    'Pré-cadastrado em': r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : ''
   }));
   const ws = XLSX.utils.json_to_sheet(data);
   ws['!cols'] = [{wch:26},{wch:16},{wch:22},{wch:22},{wch:16},{wch:34},{wch:16},{wch:14},{wch:20}];
