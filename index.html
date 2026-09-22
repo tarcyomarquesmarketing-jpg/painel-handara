@@ -380,13 +380,13 @@ function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>
 document.getElementById('download').addEventListener('click', ()=>{
   if(!CADASTROS.length) return;
   const data = CADASTROS.map(r=>({
-    Nome:r.nome||'', WhatsApp:r.whatsapp||'', 'Cidade/UF':r.cidade_uf||'',
-    'Cidade (padronizada)':r.cidade_norm||'',
-    Bairro:r.bairro||'', 'Motivação':r.motivacao||'', Status:r.status||'', Origem:r.origem||'',
+    Nome:r.nome||'', WhatsApp:r.whatsapp||'', 'E-mail':r.email||'', CPF:r.cpf||'',
+    'Cidade/UF':r.cidade_uf||'', 'Cidade (padronizada)':r.cidade_norm||'', Bairro:r.bairro||'',
+    'Motivação':r.motivacao||'', Status:r.status||'', Origem:r.origem||'',
     'Pré-cadastrado em': r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : ''
   }));
   const ws = XLSX.utils.json_to_sheet(data);
-  ws['!cols'] = [{wch:26},{wch:16},{wch:22},{wch:22},{wch:16},{wch:34},{wch:16},{wch:14},{wch:20}];
+  ws['!cols'] = [{wch:26},{wch:16},{wch:28},{wch:16},{wch:22},{wch:22},{wch:16},{wch:34},{wch:16},{wch:14},{wch:20}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Revendedoras");
   XLSX.writeFile(wb, 'revendedoras-handara-'+new Date().toISOString().slice(0,10)+'.xlsx');
